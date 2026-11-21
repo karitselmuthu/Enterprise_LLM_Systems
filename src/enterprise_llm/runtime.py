@@ -18,6 +18,7 @@ class Generation:
 class Runtime:
     def __init__(self, model_id: str | None = None, device: str = "auto", local_files_only: bool = True):
         self.model_id = model_id or os.getenv("LLM_MODEL_ID")
+        self.revision = os.getenv("LLM_MODEL_REVISION") or None  # commit hash or tag; pin it for Hub downloads
         self.device_preference = device
         self.local_files_only = local_files_only
         self._lock = threading.Lock()
@@ -42,9 +43,11 @@ class Runtime:
                 self.device = "cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu"
             else:
                 self.device = self.device_preference
-            tokenizer = AutoTokenizer.from_pretrained(self.model_id, local_files_only=self.local_files_only,
+            tokenizer = AutoTokenizer.from_pretrained(self.model_id, revision=self.revision,
+                                                       local_files_only=self.local_files_only,
                                                        trust_remote_code=False)
-            model = AutoModelForCausalLM.from_pretrained(self.model_id, local_files_only=self.local_files_only,
+            model = AutoModelForCausalLM.from_pretrained(self.model_id, revision=self.revision,
+                                                         local_files_only=self.local_files_only,
                                                          trust_remote_code=False)
             model.to(self.device)
             model.eval()
