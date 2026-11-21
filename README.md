@@ -65,6 +65,7 @@ The `attention` command reports an explicit CUDA Flash timing only when that ker
 ## Serving configuration
 
 - `LLM_MODEL_ID`: local model path or already cached model ID; unset uses toy backend.
+- `LLM_MODEL_REVISION`: optional commit hash or tag that pins the Hugging Face model version.
 - `LLM_MAX_CONCURRENCY`: number of active inference jobs, default 2.
 - `LLM_MAX_QUEUE`: waiting request capacity, default 16.
 - `LLM_QUEUE_TIMEOUT`: seconds to wait for admission or an active slot, default 30.
